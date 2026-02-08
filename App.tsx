@@ -8,10 +8,17 @@ import ConnectScreen from './components/ConnectScreen';
 import Dashboard from './components/Dashboard';
 import SettingsScreen from './components/SettingsScreen';
 import LanguageSwitcher from './components/LanguageSwitcher';
+import Callback from './components/Callback';
 
 const App: React.FC = () => {
   const [lang, setLang] = useState<Language>(Language.EN);
-  const [step, setStep] = useState<AppStep>(AppStep.WELCOME);
+  const [step, setStep] = useState<AppStep>(() => {
+    // 检查是否是 OAuth callback
+    if (window.location.pathname === '/callback') {
+      return AppStep.CALLBACK;
+    }
+    return AppStep.WELCOME;
+  });
   
   const [user, setUser] = useState<UserState>({
     hasCompletedSetup: false,
@@ -75,6 +82,18 @@ const App: React.FC = () => {
       setStep(AppStep.WELCOME);
   };
 
+  const handleOAuthSuccess = (email: string, name: string) => {
+    setUser(prev => ({ ...prev, email, hasCompletedSetup: true }));
+    window.history.replaceState({}, document.title, '/');
+    setStep(AppStep.DASHBOARD);
+  };
+
+  const handleOAuthError = (error: string) => {
+    console.error('OAuth error:', error);
+    window.history.replaceState({}, document.title, '/');
+    setStep(AppStep.CONNECT);
+  };
+
   // -- Render Logic --
 
   return (
@@ -119,6 +138,13 @@ const App: React.FC = () => {
             <ConnectScreen 
                 t={t.connect} 
                 onConnect={handleConnect} 
+            />
+        )}
+
+        {step === AppStep.CALLBACK && (
+            <Callback 
+                onSuccess={handleOAuthSuccess}
+                onError={handleOAuthError}
             />
         )}
 

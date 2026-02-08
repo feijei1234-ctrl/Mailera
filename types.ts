@@ -3,6 +3,7 @@ export enum AppStep {
   IDENTITY = 'IDENTITY',
   TUNING = 'TUNING',
   CONNECT = 'CONNECT',
+  CALLBACK = 'CALLBACK',
   DASHBOARD = 'DASHBOARD',
   SETTINGS = 'SETTINGS',
   EDIT_RULES = 'EDIT_RULES', // Re-using TUNING screen logic

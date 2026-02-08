@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { Translation } from '../types';
 import { ShieldCheck, Loader2 } from 'lucide-react';
 
+// Microsoft OAuth 配置
+const MICROSOFT_CLIENT_ID = '21b8ad7e-150d-49fa-8abf-31b0ff1e7274';
+const REDIRECT_URI = 'https://mailera-nine.vercel.app/callback';
+const SCOPES = ['openid', 'profile', 'email', 'Mail.Read', 'User.Read'];
+
 interface Props {
   t: Translation['connect'];
   onConnect: () => void;
@@ -12,10 +17,17 @@ const ConnectScreen: React.FC<Props> = ({ t, onConnect }) => {
 
   const handleAuth = () => {
     setIsLoading(true);
-    // Simulate API delay
-    setTimeout(() => {
-        onConnect();
-    }, 2000);
+    
+    // 构建 Microsoft OAuth 授权 URL
+    const authUrl = new URL('https://login.microsoftonline.com/common/oauth2/v2.0/authorize');
+    authUrl.searchParams.set('client_id', MICROSOFT_CLIENT_ID);
+    authUrl.searchParams.set('response_type', 'code');
+    authUrl.searchParams.set('redirect_uri', REDIRECT_URI);
+    authUrl.searchParams.set('scope', SCOPES.join(' '));
+    authUrl.searchParams.set('response_mode', 'query');
+    
+    // 跳转到 Microsoft 登录页
+    window.location.href = authUrl.toString();
   };
 
   return (
