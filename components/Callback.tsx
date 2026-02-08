@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 
-// n8n Webhook 地址
-const N8N_WEBHOOK_URL = 'https://n8n-production-9f74.up.railway.app/webhook/user-register';
+// n8n Webhook 地址 - OAuth Token Exchange 工作流
+const N8N_WEBHOOK_URL = 'https://n8n-production-9f74.up.railway.app/webhook/oauth-callback';
 
 interface Props {
   onSuccess: (email: string, name: string) => void;
